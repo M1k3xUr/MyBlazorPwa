@@ -1,0 +1,5 @@
+input, textarea{width:100%;margin:5px auto;border-radius: 5px;border: 1px solid #ccc;padding: 5px;}
+.message{animation-name: copyAnim;animation-duration: 3s;border-radius: 5px;}
+.error-message{background-color: lightcoral;}
+.success-message{background-color: lightgreen;}
+@keyframes copyAnim{0%{opacity:0;} 10%{opacity: 1;} 90%{opacity: 1;} 100%{opacity:0;}}

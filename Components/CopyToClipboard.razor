@@ -1,0 +1,23 @@
+@* @using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+<button @onclick="() => CopyCode()">Copy Code</button>
+
+@code{
+    [Parameter]
+    public string Thehtmltext {get;set;} = "";
+    string EndCode(){return Thehtmltext;}
+    public async Task CopyCode(){
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", Thehtmltext);
+    }
+} *@
+
+
+@* <button class="copy-button" @onclick="CopyCode">Copy Code</button>
+
+@code {
+    private void CopyCode()
+    {
+        // Code to copy the final HTML code to the clipboard
+    }
+} *@

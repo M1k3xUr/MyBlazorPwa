@@ -1,0 +1,84 @@
+@page "/builders/categorybanner"
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+@* @using System.Threading.Tasks *@
+
+<PageTitle>Category Banner</PageTitle>
+
+<div class="text-center">
+    <h3 class="display-6">Category Banners</h3>
+    <section>
+        <div>
+            <form>
+                @* <div><input type="url" @bind="hostUrl" name="hostUrl" placeholder="Host URL" /></div> *@
+                <!-- Input for image URL PC -->
+                <div><input type="text" @bind="imageUrlPC" name="imageUrlPC" placeholder="Image URL Desktop" /></div>
+                <!-- Input for image URL PC -->
+                <div><input type="text" @bind="imageUrlMobile" name="imageUrlMobile" placeholder="Image URL Mobile" /></div>
+                <!-- Input for link URL -->
+                <div><input type="text" @bind="linkUrl" name="linkUrl" placeholder="Link URL" />
+                <!-- Input for aria-label attribute --></div>
+                <div><textarea type="text" @bind="ariaLabel" name="ariaLabel" placeholder="Aria Label"></textarea></div>
+            </form>
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="message @messageClass">@errorMessage</div>
+            } else{
+                <div class="message @messageClass">@errorMessage</div>
+            }
+            <button class="bdr-b-l bdr-t-l" @onclick="() => CopyCode(HtmlContentDisplay())" type="button">Copy Code</button>
+        </div>
+        <div class="">
+            <div>
+                <div id="previewContainer">@* Live Preview *@
+                    <div id="livepreview">
+                        <div class="imglivepreview boxrounded boxshadow">
+                            <div style="width: 100%; margin: 30px 0;">
+                            <a href="@(hostUrl+linkUrl)" aria-label="@ariaLabel">
+                                <img alt="banner" src="@(hostUrl+imageUrlPC)" width="100%">
+                                <img alt="banner" src="@(hostUrl+imageUrlMobile)" width="100%">
+                            </a>
+                            </div>
+                        </div>
+                    </div>
+                    @* <div class="liveprv">
+                        <button  class="bdr-b-r bdr-t-r">Clear Input</button>
+                    </div> *@
+                </div>
+            </div>            
+        </div>
+    </section>
+</div>
+
+@code{
+    @* Inputs *@
+    public string? hostUrl = "https://www.brandsmartusa.com";
+    public string? imageUrlPC {get; set;} = "";
+    public string? imageUrlMobile {get; set;} = "";
+    public string? linkUrl {get; set;} = "";
+    public string? ariaLabel {get; set;} = ""; 
+    @* Button *@
+    private string messageClass = "";
+    private string errorMessage = "";
+
+    string HtmlContentDisplay(){ return $"<div style='width: 100%; margin: 30px 0;'><a href=\"{linkUrl}\" aria-label=\"{ariaLabel}\"><picture><source media='(min-width:768px)' srcset=\"{imageUrlPC}\"><img alt='banner' src=\"{imageUrlMobile}\" width='100%'></picture></a></div>";}
+
+    public async Task CopyCode(string htmltext){
+        if(string.IsNullOrEmpty(imageUrlPC) || string.IsNullOrEmpty(imageUrlMobile) || string.IsNullOrEmpty(linkUrl) || string.IsNullOrEmpty(ariaLabel)){
+            // Display an error message
+            errorMessage = "Fields are empty";
+            messageClass = "error-message";
+            await Task.Delay(5000);
+            errorMessage = "";
+            messageClass = "";
+        } else{
+            errorMessage = "Code Copied";
+            messageClass = "success-message";
+            await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", htmltext);
+            await Task.Delay(5000);
+            errorMessage = "";
+            messageClass = "";
+        }
+        
+    }
+}

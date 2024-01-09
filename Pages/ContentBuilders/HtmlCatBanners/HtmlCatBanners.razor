@@ -1,0 +1,191 @@
+@page "/builders/htmlcatbanners"
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+<style>
+    .card-toggle{display: flex;gap: 5px;flex: auto;width: 100%;}
+</style>
+
+<div class="card-builder">
+    <h2>Create Your HTML Cards</h2>
+     <div class="card-toggle">
+        <div>
+            <input type="checkbox" id="cardToggle" @bind="@IsTwoCards" />
+            <label for="cardToggle">Create Two Cards</label>
+        </div>
+        <div>
+            <input type="url" placeholder="http main url" @bind="@HttpMainUrl">
+        </div>
+        <div style="float: right;">
+            <button @onclick="()=>copyCodeButton()">Copy Code</button>
+            <button @onclick="ClearInput">Clear Input</button>
+            <!-- Copy to clipboard functionality -->
+            @* <CopyToClipboard Thehtmltext="CardHTMLText()" /> *@
+        </div>
+    </div>
+    <div>
+        @if(IsTwoCards){
+            <div class="row">
+            <form class="col-md-6">
+                <fieldset>
+                    <legend>1st Card</legend>
+                    <input onfocus="this.value=''" @bind="@LogoUrl" placeholder="logo url" />
+                    <input @bind="@ProductUrl" placeholder="image url" />
+                    <input @bind="@CardUrl" placeholder="url link" />
+                    <input @bind="@Title1" placeholder="Title in Red" />
+                    <input @bind="@Title2" placeholder="Title in Blue" />
+                    <input @bind="@Paragraph1" placeholder="First Parragraph" />
+                    <input @bind="@Paragraph2" placeholder="Second Parragraph" />
+                    <input @bind="@CallToAction" placeholder="button Name" />
+                    <input type="checkbox" placeholder="align" @bind="@TextIsAligned" />
+                </fieldset>
+            </form>
+            <form class="col-md-6">
+                <fieldset>
+                    <legend>2nd Card</legend>
+                    <input @bind="@LogoUrl2ndCard" placeholder="logo url" />
+                    <input @bind="@ProductUrl2ndCard" placeholder="image url" />
+                    <input @bind="@CardUrl2ndCard" placeholder="url link" />
+                    <input @bind="@Title12ndCard" placeholder="Title in Red" />
+                    <input @bind="@Title22ndCard" placeholder="Title in Blue" />
+                    <input @bind="@Paragraph12ndCard" placeholder="First Parragraph" />
+                    <input @bind="@Paragraph22ndCard" placeholder="Second Parragraph" />
+                    <input @bind="@CallToAction2ndCard" placeholder="button Name" />
+                    <input type="checkbox" placeholder="align" @bind="@TextIsAlignedRight" />
+                </fieldset>
+            </form>
+            </div>
+        } else{
+            <form>
+                <fieldset>
+                    <legend>Single Card</legend>
+                    <input @bind="@LogoUrl" placeholder="logo url" />
+                    <input @bind="@ProductUrl" placeholder="image url" />
+                    <input @bind="@CardUrl" placeholder="url link" />
+                    <input @bind="@Title1" placeholder="Title in Red" />
+                    <input @bind="@Title2" placeholder="Title in Blue" />
+                    <input @bind="@Paragraph1" placeholder="First Parragraph" />
+                    <input @bind="@Paragraph2" placeholder="Second Parragraph" />
+                    <input @bind="@CallToAction" placeholder="button Name" />
+                    <input type="checkbox" placeholder="align" @bind="@TextIsAligned" />
+                </fieldset>
+                <input type="reset" value="Clear">
+            </form>
+        }
+    </div>
+
+    <!-- Additional input fields for titles, paragraphs, and call-to-action button -->
+
+
+    <div class="preview-area row">
+        <!-- Render one or two card components based on the selected option -->
+        @if(IsTwoCards){
+            <div class="col-md-6">
+                <CardComponent
+                    HttpMainUrl = "@HttpMainUrl"
+                    LogoUrl="@LogoUrl"
+                    ProductUrl = "@ProductUrl"
+                    CardUrl = "@CardUrl"
+                    Title1="@Title1"
+                    Title2="@Title2"
+                    Paragraph1="@Paragraph1"
+                    Paragraph2="@Paragraph2"
+                    CallToAction="@CallToAction"
+                    TextOrientation="@(AlignmetText(TextOrientation))"
+                 />
+            </div>
+            <div class="col-md-6">
+                <CardComponent
+                    HttpMainUrl = "@HttpMainUrl"
+                    LogoUrl="@LogoUrl2ndCard"
+                    ProductUrl = "@ProductUrl2ndCard"
+                    CardUrl = "@CardUrl2ndCard"
+                    Title1="@Title12ndCard"
+                    Title2="@Title22ndCard"
+                    Paragraph1="@Paragraph12ndCard"
+                    Paragraph2="@Paragraph22ndCard"
+                    CallToAction="@CallToAction2ndCard"
+                    TextOrientation="@(AlignmetTextRight(TextOr2ndCard))"
+                 />
+            </div>
+        } else {
+            <div style="width: 60%;margin:auto;">
+                <CardComponent
+                    HttpMainUrl = "@HttpMainUrl"
+                    LogoUrl="@LogoUrl"
+                    ProductUrl = "@ProductUrl"
+                    CardUrl = "@CardUrl"
+                    Title1="@Title1"
+                    Title2="@Title2"
+                    Paragraph1="@Paragraph1"
+                    Paragraph2="@Paragraph2"
+                    CallToAction="@CallToAction"
+                    TextOrientation="@(AlignmetText(TextOrientation))"
+                 />
+            </div>
+        }
+    </div>    
+</div>
+
+
+@code{
+    //todo
+    public string HttpMainUrl {get; set;} = "";
+    public string LogoUrl {get; set;} = "";
+    public string CardUrl {get; set;} = "";
+    public string ProductUrl {get; set;} = "";
+    public string Title1 {get; set;} = "";
+    public string Title2 {get; set;} = "";
+    public string Paragraph1 {get; set;} = "";
+    public string Paragraph2 {get; set;} = "";
+    public string CallToAction {get; set;} = "";
+    public string LogoUrl2ndCard {get; set;} = "";
+    public string CardUrl2ndCard {get; set;} = "";
+    public string ProductUrl2ndCard {get; set;} = "";
+    public string Title12ndCard {get; set;} = "";
+    public string Title22ndCard {get; set;} = "";
+    public string Paragraph12ndCard {get; set;} = "";
+    public string Paragraph22ndCard {get; set;} = "";
+    public string CallToAction2ndCard {get; set;} = "";
+    public string TextOrientation { get; set; } = "";
+    public string TextOr2ndCard { get; set; } = "";
+
+    private bool IsTwoCards = false;
+
+    //make text align to left or centered
+    private bool TextIsAligned = false;
+    private bool TextIsAlignedRight = false;
+    string AlignmetText(string TxtOr){
+        if(TextIsAligned){
+            TxtOr = "left";
+        } else{
+            TxtOr = "center";
+        }
+        return TxtOr;
+    }
+    string AlignmetTextRight(string TxtOr){
+        if(TextIsAlignedRight){
+            TxtOr = "left";
+        } else{
+            TxtOr = "center";
+        }
+        return TxtOr;
+    }
+
+    string CardHTMLText(){
+        if(IsTwoCards){
+            return $"<div class='row' style='margin:30px auto;'><div class='col-md-6'><div style='width: 100%; background: white; padding-top: 20px; margin-bottom: 30px;box-shadow:0 3px 15px #0000001a;border-radius:15px;min-height: 100%;display: grid;'><div style='text-align: center;'><img src=\"{LogoUrl}\" alt='logo' style='margin: 10px auto;width: 150px;' /></div><div style='align-self: self-start;'><a href=\"{CardUrl}\" style='color: black; text-decoration: none;' target='_blank'><img src=\"{ProductUrl}\" alt='' style='margin:0 auto;padding: 0;display: block;width: 100%;max-width: 400px !important;'></a></div><div style='padding: 20px;text-align:{AlignmetText(TextOrientation)};align-self: self-end;'><p style='font-size: 35px;font-weight: bold;line-height: 1;font-family: arial;margin-bottom: 10px;color: #ce2032;margin-top: 30px;'>{Title1}</p><p style='font-size: 35px;color: #204184;font-weight: bold;margin-bottom: 0px;line-height: 35px;'>{Title2}</p><p style='margin-bottom: 0;font-size: 18px;'>{Paragraph1}</p><p style='margin-bottom: 20px;font-size: 18px;'>{Paragraph2}</p><a href=\"{CardUrl}\" style='color: black; text-decoration: none;' target='_blank'><label class='btn btn-danger p-add-button' style='background: #204184; border-color:#204184;  height:44px; color: white; width: 152px; text-align: center; border-radius: 25px; font-size: 16px; padding: 10px 0; font-weight: normal;'>{CallToAction}</label></a></div></div></div><div class='col-md-6'><div style='width: 100%; background: white; padding-top: 20px; margin-bottom: 30px;box-shadow:0 3px 15px #0000001a;border-radius:15px;min-height: 100%;display: grid;'><div style='text-align: center;'><img src=\"{LogoUrl2ndCard}\" alt='Logo' style='margin: 10px auto;width: 150px;display: block;'></div><div style='align-self: self-start;'><a href=\"{CardUrl2ndCard}\" style='color: black; text-decoration: none;' target='_blank'><img src=\"{ProductUrl2ndCard}\" alt='' style='margin:0 auto;padding: 0;display: block;width: 100%;max-width: 400px !important;'></a></div><div style='padding: 20px;text-align:{AlignmetTextRight(TextOr2ndCard)};align-self: self-end;'><p style='font-size: 35px;font-weight: bold;line-height: 1;font-family: arial;margin-bottom: 10px;color: #ce2032;margin-top: 30px;'>{Title12ndCard}</p><p style='font-size: 35px;color: #204184;font-weight: bold;margin-bottom: 0px;line-height: 35px;'>{Title22ndCard}</p><p style='margin-bottom: 0;font-size: 18px;'>{Paragraph12ndCard}</p><p style='margin-bottom: 20px;font-size: 12px;'>{Paragraph22ndCard}</p><a href=\"{CardUrl2ndCard}\" style='color: black; text-decoration: none;' target='_blank'><label class='btn btn-danger p-add-button' style='background: #204184; border-color:#204184;  height:44px; color: white; width: 152px; text-align: center; border-radius: 25px; font-size: 16px; padding: 10px 0; font-weight: normal;'>{CallToAction2ndCard}</label></a></div></div></div></div>";
+        } else{
+            return $"<div style='width: 100%; background: white; padding-top: 20px; margin-bottom: 30px;box-shadow:0 3px 15px #0000001a;border-radius:15px;'><div style='text-align: center;'><img src=\"{LogoUrl}\" alt='logo' style='margin: 10px auto;width: 150px;display: block;'></div><a href=\"{CardUrl}\" aria-label='tvs' style='color: black; text-decoration: none;' target='_blank'><img src=\"{ProductUrl}\" alt='' style='margin:0 auto;padding: 0;display: block;width: 100%;max-width:500px !important;'></a><div style='padding: 20px;text-align:{AlignmetText(TextOrientation)};'><p style='font-size: 35px;font-weight: bold;line-height: 1;font-family: arial;margin-bottom: 10px;color: #ce2032;margin-top: 30px;'>{Title1}</p><p style='font-size: 35px;color: #204184;font-weight: bold;margin-bottom: 0px;line-height: 35px;'>{Title2}</p><p style='margin-bottom: 0;font-size: 18px;'>{Paragraph1}</p><p style='margin-bottom: 20px;font-size: 18px;'>{Paragraph2}</p><a href=\"{ProductUrl}\" aria-label='tvs' style='color: black; text-decoration: none;' target='_blank'><label class='btn btn-danger p-add-button' style='background: #204184; border-color:#204184;  height:44px; color: white; width: 152px; text-align: center; border-radius: 25px; font-size: 16px; padding: 10px 0; font-weight: normal;'>{CallToAction}</label></a></div></div>";
+        }
+    }
+
+    public async Task copyCodeButton(){
+        //todo
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", CardHTMLText());
+    }
+
+    public void ClearInput(){
+        //todo
+    }
+}

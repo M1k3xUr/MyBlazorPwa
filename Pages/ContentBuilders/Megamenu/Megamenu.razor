@@ -1,0 +1,85 @@
+@page "/builders/megamenu"
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Mega Menu</PageTitle>
+<style>
+    .mmcont{display: flex;height: 100%;}
+    .mm1st{width: 70%;}
+    .mm2st{text-align: center;width: 30%;}
+    input, textarea{width: 80%;margin: 5px;}
+</style>
+
+<section class="mmcont">
+<div class="text-center mm1st">
+    <h3>Mega Menus</h3>
+    <form>
+        <div>
+            <input type="text" @bind="mainurl" name="mainsrc" placeholder="Add main URL" />
+        </div>
+        <div>
+            <input type="text" @bind="pcsrc" name="src" placeholder="PC Image Src:" />
+        </div>
+        <div>
+            <input type="text" @bind="mobilesrc" name="src" placeholder="Mobile Image Src" />
+        </div>
+        <div>
+            <input type="text" @bind="urllink" name="urllink" placeholder="Image URL Link" />
+        </div>
+        <div>
+            <textarea type="text" @bind="ariaLabel" name="ariaLabel" placeholder="ARIA Label Content"></textarea>
+        </div>      
+    </form>
+    <div class="mmcont">
+        <div style="width:50%">
+            <!--h3>Preview: </h3>
+            <div id="rawpreview"></div-->
+        </div>
+        <div style="width:50%">
+            <div>
+                <button @onclick="() => copyCodeButton()">Copy Code</button>
+            </div>
+            <div id="preview">
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div class="mm2st">
+    <h3>Live Preview</h3>
+    <div>
+        <div class="d-none d-lg-block">
+                <a href="@(mainurl + urllink)" aria-label="@ariaLabel" target="_blank">
+                    <img alt=" banner" src="@(mainurl + pcsrc)">
+                </a>
+            </div>
+            <div>
+                <div style="margin-top: 20px;" id="cameraDepartmentPromoBanners" class="carousel slide" data-bs-ride="true">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <a href="@(mainurl + urllink)" aria-label="@ariaLabel" target="_blank">
+                                <img src="@(mainurl + mobilesrc)" class="img-fluid w-100" alt="promo-banner">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+</section>
+
+@code{
+    //todo
+    public string mainurl {get; set;} = "";
+    public string pcsrc {get; set;} = "";
+    public string mobilesrc {get; set;} = "";
+    public string urllink {get; set;} = "";
+    public string ariaLabel {get; set;} = "";
+
+    string htmltext() {return $"<div class='d-none d-lg-block'><a href=\"{urllink}\" aria-label=\"{ariaLabel}\"><img alt='banner' src=\"{pcsrc}\"></a></div><style>.carousel-indicators.mobile {{  position: static;  margin: 20px 0 0 0;}}</style><div class='d-lg-none'><div id='cameraDepartmentPromoBanners' class='carousel slide' data-bs-ride='true'><div class='carousel-inner'><div class='carousel-item active'><a href=\"{urllink}\" aria-label=\"{ariaLabel}\" target='_blank'><img src=\"{mobilesrc}\" class='img-fluid w-100' alt='promo-banner'></a></div><div class='carousel-item'><a href=\"{urllink}\" aria-label=\"{ariaLabel}\" target='_blank'><img loading='lazy' src=\"{mobilesrc}\" class='img-fluid w-100' alt='promo-banner'></a></div><div class='carousel-item'><a href=\"{urllink}\" aria-label=\"{ariaLabel}\" target='_blank'><img loading='lazy' src=\"{mobilesrc}\" class='img-fluid w-100' alt='promo-banner'></a></div></div><div class='carousel-indicators mobile'><button type='button' data-bs-target='#cameraDepartmentPromoBanners' data-bs-slide-to='0' class='active' aria-current='true' aria-label='Slide 1'></button><button type='button' data-bs-target='#cameraDepartmentPromoBanners' data-bs-slide-to='1' aria-label='Slide 2'></button><button type='button' data-bs-target='#cameraDepartmentPromoBanners' data-bs-slide-to='2' aria-label='Slide 3'></button></div></div></div>";}
+
+    public async Task copyCodeButton(){
+        //todo
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", htmltext());
+    }
+}
